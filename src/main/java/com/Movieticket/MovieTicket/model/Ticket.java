@@ -1,5 +1,6 @@
 package com.Movieticket.MovieTicket.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class  Ticket {
 
     @ManyToOne
     @JoinColumn
+    @JsonBackReference
     private Show show;
 
     @ManyToOne

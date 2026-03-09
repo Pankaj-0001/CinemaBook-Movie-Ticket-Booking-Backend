@@ -10,12 +10,13 @@ import com.Movieticket.MovieTicket.repo.TicketRepo;
 import com.Movieticket.MovieTicket.repo.UserRepo;
 import com.Movieticket.MovieTicket.util.TicketMapper;
 import com.Movieticket.MovieTicket.util.TicketResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Transactional
 @Service
 public class TicketService {
     private TicketRepo ticketRepo;
@@ -31,7 +32,7 @@ public class TicketService {
     }
 
     public TicketResponse addTicket(TicketDTO ticketDTO){
-        Optional<Show> show  =  showsRepo.findById(ticketDTO.getShow_id());
+        Optional<Show> show  =  showsRepo.findByIdWithLock(ticketDTO.getShow_id());
         if (show.isEmpty()){
             throw new RuntimeException("Show doesn't exist");
         }
@@ -61,11 +62,6 @@ public class TicketService {
 
         ticketRepo.save(ticket);
 
-        user.get().getTicketList().add(ticket);
-        show.get().getTicketList().add(ticket);
-        userRepo.save(user.get());
-        showsRepo.save(show.get());
-
         TicketResponse ticketResponse = TicketMapper.ticketResponseMaker(show.get(), ticket) ;
         return ticketResponse;
 
@@ -76,13 +72,13 @@ public class TicketService {
         for (String a:bookingTicket ) {
             bookedSeats.append(a).append(",");
         }
-        return bookingTicket.toString();
+        return bookedSeats.toString();
     }
 
     private Double getTotalPrice(List<ShowSeat> showSeatList, List<String> bookingTicket) {
         Double totalPrice = 0.0;
         for (ShowSeat showSeat : showSeatList){
-            if (bookingTicket.contains(showSeat)) {
+            if (bookingTicket.contains(showSeat.getSeatNo())) {
                 totalPrice= totalPrice + showSeat.getSeatPrice();
                 showSeat.setIs_available(false);
             }
@@ -93,7 +89,7 @@ public class TicketService {
 
     private Boolean checkAvailability(List<ShowSeat> showSeatList, List<String> bookingTicket) {
         for (ShowSeat showSeat : showSeatList){
-            if (bookingTicket.contains(showSeat) && !showSeat.getIs_available()){
+            if (bookingTicket.contains(showSeat.getSeatNo()) && !showSeat.getIs_available()){
                 return false;
             }
         }

@@ -5,7 +5,6 @@ import com.Movieticket.MovieTicket.dto.UserRequest;
 import com.Movieticket.MovieTicket.model.User;
 import com.Movieticket.MovieTicket.repo.UserRepo;
 import com.Movieticket.MovieTicket.util.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,7 +44,7 @@ public class UserService {
                     new UsernamePasswordAuthenticationToken(usersRequest.getEmail(),usersRequest.getPassword())
             );
             if (auth.isAuthenticated()){
-                return jwTutils.getToken(usersRequest.getEmail()) ;
+                return jwTutils.generateToken(usersRequest.getEmail()) ;
             }else return "fail";
 
         }catch (Exception e){

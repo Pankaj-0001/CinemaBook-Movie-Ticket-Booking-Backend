@@ -63,6 +63,7 @@ public class ShowsService {
 
             showSeats.add(showSeat);
         }
+        show.setShowSeatList(showSeats);
         showsRepo.save(show);
 
         return "The request for generation of Seats Have been successful";

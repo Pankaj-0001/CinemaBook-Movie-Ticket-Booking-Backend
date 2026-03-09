@@ -1,10 +1,8 @@
 package com.Movieticket.MovieTicket.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -17,6 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"showSeatList", "ticketList"})
 public class Show {
     @Id
     private String id;
@@ -33,8 +32,10 @@ public class Show {
     private Theater theater;
 
     @OneToMany(mappedBy = "show" , cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ShowSeat> showSeatList = new ArrayList<>();
 
     @OneToMany(mappedBy = "show" , cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Ticket> ticketList = new ArrayList<>();
 }

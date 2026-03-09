@@ -3,6 +3,7 @@ package com.Movieticket.MovieTicket.Config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -13,9 +14,10 @@ import java.util.Map;
 @Component
 public class JWTutils {
 
-    private String Secret_key = "$2a$12$69.5la4vfbLrVWSDgTprAuq3.gXHbFyaq2onoFsqglif0J0dF2kbW";
+    @Value("${jwt.secretKey}")
+    private String Secret_key ;
 
-    public String getToken(String email) {
+    public String generateToken(String email) {
         Map<String,Object> claims =new HashMap<>();
         return Jwts.builder()
                 .subject(email)
